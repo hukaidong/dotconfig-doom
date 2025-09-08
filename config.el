@@ -75,6 +75,10 @@
 ;; they are implemented.
 (setq initial-frame-alist '((width . 143) (height . 55)))
 
+(add-hook 'org-mode-hook
+          (lambda () (setq buffer-save-without-query t)))
+(setq confirm-kill-emacs nil)
+
 ;; Include agenda files and current buffer as refile targets
 (setq org-refile-targets '((nil :maxlevel . 3)
                            (org-agenda-files :maxlevel . 3)))
