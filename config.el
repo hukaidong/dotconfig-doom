@@ -90,6 +90,21 @@
 
 (setq org-latex-compiler "lualatex")
 
+(setq org-preview-latex-default-process 'dvisvgm)
+(setq org-preview-latex-process-alist
+      '((dvisvgm :programs ("xelatex" "dvisvgm")
+                 :description "xdv > svg"
+                 :message "you need to install the programs: xelatex and dvisvgm."
+                 :image-input-type "xdv"
+                 :image-output-type "svg"
+                 :image-size-adjust (1.7 . 1.5)
+                 :latex-compiler ("xelatex -no-pdf -interaction nonstopmode -output-directory %o %f")
+                 :image-converter ("dvisvgm %f -n -b min -c %S -o %O"))))
+(after! org
+  (add-to-list 'org-capture-templates
+               '("t" "Todo" entry (file+headline +org-capture-todo-file "Inbox")
+                 "* TODO %?\nSCHEDULED: %t\n%i\n%a" :prepend t)))
+
 (defun kill-current-buffer ()
   "Kill the current buffer without prompting."
   (interactive)
@@ -98,9 +113,9 @@
 (defun save-and-kill-buffer ()
   "Save the current buffer and then kill it, unless it's an indirect buffer."
   (interactive)
-  (if (buffer-base-buffer)
+  (if (bound-and-true-p org-capture-mode)
       ;; If this is an indirect buffer, use default C-c C-k behavior
-      (call-interactively (key-binding (kbd "C-c C-k") t))
+      (org-capture-kill)
     ;; Otherwise, save and kill as usual
     (when (buffer-modified-p)
       (save-buffer))
