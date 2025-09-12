@@ -3,7 +3,6 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 ;; (setq user-full-name "John Doe"
@@ -33,7 +32,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-one)
-
+(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 13 :weight 'demibold))
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
@@ -73,7 +72,7 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-(setq initial-frame-alist '((width . 143) (height . 55)))
+(setq initial-frame-alist '((width . 180) (height . 55)))
 
 (add-hook 'org-mode-hook
           (lambda () (setq buffer-save-without-query t)))
@@ -127,3 +126,13 @@
 
 (global-set-key (kbd "C-c k") 'kill-current-buffer)
 (global-set-key (kbd "C-c C-k") 'save-and-kill-buffer)
+
+(setq user-mail-address "hukaidonghkd@gmail.com")
+(after! mu4e
+  (setq mu4e-drafts-folder "/Drafts")
+  (setq mu4e-sent-folder "/Sent")
+  (setq mu4e-refile-folder "/Archive")
+  (setq mu4e-get-mail-command "mbsync --all")
+  (setq mu4e-update-interval 300)
+  (setq mu4e-headers-auto-update t)
+)
