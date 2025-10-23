@@ -19,6 +19,7 @@
 (setq org-latex-compiler "lualatex")
 
 (setq org-preview-latex-default-process 'dvisvgm)
+
 (setq org-preview-latex-process-alist
       '((dvisvgm :programs ("xelatex" "dvisvgm")
                  :description "xdv > svg"
