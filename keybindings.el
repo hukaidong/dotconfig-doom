@@ -17,7 +17,7 @@
     (kill-buffer (current-buffer))))
 
 ;; Custom key bindings
-(global-set-key (kbd "C-c k") 'kill-current-buffer)
-(global-set-key (kbd "C-c C-k") 'save-and-kill-buffer)
+(map! :g "C-c k" #'kill-current-buffer
+      :g "C-c C-k" #'save-and-kill-buffer)
 
 ;;; keybindings.el ends here

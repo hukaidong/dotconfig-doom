@@ -5,8 +5,4 @@
 (setq user-full-name "Kaidong Hu"
       user-mail-address "hukaidonghkd@gmail.com")
 
-;; General settings
-
-(setq confirm-kill-emacs nil)
-
 ;;; general.el ends here
