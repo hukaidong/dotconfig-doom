@@ -23,7 +23,7 @@
        :completion
        ;;company           ; the ultimate code completion backend
        (corfu +orderless)  ; complete with cap(f), cape and a flying feather!
-       helm              ; the *other* search engine for love and life
+       (helm +fuzzy +icons); the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        ;;ivy               ; a search engine for love and life
        ;;vertico           ; the search engine of the future
@@ -88,10 +88,10 @@
 
        :tools
        ;;ansible
-       ;;biblio            ; Writes a PhD for you (citation needed)
+       biblio            ; Writes a PhD for you (citation needed)
        ;;collab            ; buffers with friends
        ;;debugger          ; FIXME stepping through code, to help you add bugs
-       ;;direnv
+       direnv
        ;;docker
        ;;editorconfig      ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
@@ -192,5 +192,4 @@
 
        :config
        ;;literate
-       ;;(default +bindings +smartparens))
-)
+       (default +smartparens))
