@@ -1,3 +1,15 @@
+#+title: Doom Emacs Configuration
+#+author: Kaidong Hu
+#+email: hukaidonghkd@gmail.com
+#+property: header-args:emacs-lisp :tangle config.el :results silent
+
+* Prelude
+
+Early initialization and workarounds for compatibility issues. This includes
+pre-declaring projectile variables to prevent lexical binding errors in Emacs
+28+ and disabling which-key-mode which is enabled by default in Doom.
+
+#+begin_src emacs-lisp
 (require 'ring)
 
 ;; Pre-declare projectile variables to avoid "Defining as dynamic an already
@@ -9,15 +21,37 @@
 
 ;; Disable which-key-mode (enabled by Doom core in doom-keybinds.el)
 (remove-hook 'doom-first-input-hook #'which-key-mode)
+#+end_src
 
+* User Information
+
+Personal information used by GPG, email clients, and file templates.
+
+#+begin_src emacs-lisp
 (setq user-full-name "Kaidong Hu"
       user-mail-address "hukaidonghkd@gmail.com")
+#+end_src
 
+* UI Configuration
+
+Visual appearance settings including theme, fonts, and editor behavior.
+Rainbow delimiters help distinguish nested parentheses in programming modes.
+
+#+begin_src emacs-lisp
 (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 (setq doom-theme 'doom-one)
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 13 :weight 'demibold))
 (setq display-line-numbers-type t)
 (setq initial-frame-alist '((width . 180) (height . 55)))
+#+end_src
+
+* Org Mode
+
+Configuration for org-mode, including the base directory for org files,
+refile settings for organizing tasks, and a custom capture template for
+quickly adding todos to an inbox.
+
+#+begin_src emacs-lisp
 (setq org-directory "~/org/")
 
 (after! org
@@ -30,8 +64,20 @@
   (add-to-list 'org-capture-templates
                '("t" "Todo" entry (file+headline +org-capture-todo-file "Inbox")
                  "* TODO %?\nSCHEDULED: %t\n%i\n%a" :prepend t)))
+#+end_src
 
-;;; Bibliography paths
+* Bibliography
+
+Settings for academic reference management, including BibTeX integration,
+citation handling, and literature note templates for use with org-roam.
+
+** Bibtex Completion
+
+Configure bibtex-completion for searching and inserting citations. Sets up
+paths for the bibliography file, PDF library, and literature notes. Includes
+a template for creating org-roam literature notes with proper metadata.
+
+#+begin_src emacs-lisp
 (after! bibtex-completion
   (setq bibtex-completion-bibliography '("~/.config/references.bib")
         bibtex-completion-library-path '("~/papers/")
@@ -55,9 +101,14 @@
                 ":END:\n\n"
                 "** Summary\n\n"
                 "** Notes\n\n")))
+#+end_src
 
-;;; Configure bibtex autokey format: author + year + first title word
-;;; Example output: smith2023deep, jones2024reinforcement
+** Bibtex Autokey
+
+Configure bibtex autokey format: author + year + first title word.
+Example output: smith2023deep, jones2024reinforcement
+
+#+begin_src emacs-lisp
 (after! bibtex
   (setq bibtex-autokey-year-length 4                    ; use full year: 2023
         bibtex-autokey-name-year-separator ""           ; no separator between name and year
@@ -69,18 +120,37 @@
         bibtex-autokey-titleword-ignore                 ; words to skip
         '("A" "An" "On" "The" "A" "For" "And" "Of" "In" "To"
           "a" "an" "on" "the" "for" "and" "of" "in" "to")))
+#+end_src
 
-;;; Org-cite configuration
+** Org-cite
+
+Configure org-cite for native citation support in org-mode. Uses biblatex
+for LaTeX export and CSL (Citation Style Language) for other formats.
+
+#+begin_src emacs-lisp
 (after! oc
   (setq org-cite-global-bibliography '("~/.config/references.bib")
         org-cite-export-processors '((latex biblatex)
                                      (t csl))))
+#+end_src
 
-;;; For faster CrossRef responses
+** Biblio (CrossRef)
+
+Set email for CrossRef API requests. CrossRef uses this to provide better
+rate limits and to contact you if there are issues with your queries.
+
+#+begin_src emacs-lisp
 (after! biblio
   (setq biblio-crossref-user-email-address "hukaidong@gmail.com"))
+#+end_src
 
-;;; Org-roam-bibtex integration
+** Org-roam-bibtex
+
+Integration between org-roam and bibtex for managing literature notes.
+Enables automatic creation of org-roam nodes from bibliography entries
+with preformatted metadata fields.
+
+#+begin_src emacs-lisp
 (use-package! org-roam-bibtex
   :after org-roam
   :hook (org-roam-mode . org-roam-bibtex-mode)
@@ -88,3 +158,4 @@
   (setq orb-preformat-keywords '("citekey" "title" "author-or-editor" "year" "url" "file")
         orb-process-file-keyword t
         orb-attached-file-extensions '("pdf" "epub")))
+#+end_src
