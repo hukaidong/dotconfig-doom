@@ -43,6 +43,8 @@ Rainbow delimiters help distinguish nested parentheses in programming modes.
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 13 :weight 'demibold))
 (setq display-line-numbers-type t)
 (setq initial-frame-alist '((width . 180) (height . 55)))
+(setq doom-leader-key ",")
+(setq doom-localleader-key ", ,")
 #+end_src
 
 * Org Mode

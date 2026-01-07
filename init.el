@@ -105,7 +105,7 @@
        ;;pdf               ; pdf enhancements
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
-       ;;tree-sitter       ; syntax and parsing, sitting in a tree...
+       tree-sitter       ; syntax and parsing, sitting in a tree...
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
@@ -143,7 +143,7 @@
        ;;json              ; At least it ain't XML
        ;;janet             ; Fun fact: Janet is me!
        ;;(java +lsp)       ; the poster child for carpal tunnel syndrome
-       ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
+       (javascript +lsp +tree-sitter) ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        ;;latex             ; writing papers in Emacs has never been so fun
@@ -154,7 +154,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +brain +roam +journal +pandoc)               ; organize your plain life in plain text
+       (org +brain +roam +journal +pandoc) ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;graphviz          ; diagrams for confusing yourself even more
