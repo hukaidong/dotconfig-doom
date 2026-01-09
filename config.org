@@ -76,17 +76,31 @@ quickly adding todos to an inbox.
                  "* TODO %?\nSCHEDULED: %t\n%i\n%a" :prepend t)))
 #+end_src
 
+* Org Journal
+
+Configure org-journal for weekly entries with Saturday as the first day of each week.
+
+#+begin_src emacs-lisp
+(after! org-journal
+  (setq org-journal-file-type 'weekly
+        org-journal-start-on-weekday 6))  ; 6 = Saturday
+#+end_src
+
 * Org Pomodoro
 
 Desktop notifications for org-pomodoro using the alert package. Uses D-Bus
 notifications which integrate with KDE Plasma and other desktop environments.
 
+When starting a pomodoro, the clock-in behavior is modified to find the nearest
+ancestor heading with a LOGBOOK drawer and clock into that instead. This allows
+clocking time to parent tasks when starting pomodoros on subtasks.
+
 #+begin_src emacs-lisp
-(use-package! alert
-  :config
+(after! alert
   (setq alert-default-style 'notifications))  ; uses D-Bus, works with Plasma
 
 (after! org-pomodoro
+  (setq org-pomodoro-keep-killed-pomodoro-time t)
 
   ;; Hook alerts into pomodoro events
   (add-hook 'org-pomodoro-finished-hook
@@ -94,7 +108,22 @@ notifications which integrate with KDE Plasma and other desktop environments.
   (add-hook 'org-pomodoro-break-finished-hook
             (lambda () (alert "Break over!" :title "org-pomodoro")))
   (add-hook 'org-pomodoro-killed-hook
-            (lambda () (alert "Pomodoro killed" :title "org-pomodoro"))))
+            (lambda () (alert "Pomodoro killed" :title "org-pomodoro")))
+
+  ;; Clock into ancestor with LOGBOOK if one exists
+  (defun my/pomodoro-clock-ancestor (orig-fun &rest args)
+    "Start pomodoro, clocking into nearest ancestor with a LOGBOOK if one exists."
+    (save-excursion
+      (let ((target nil))
+        (while (and (not target) (org-up-heading-safe))
+          (save-excursion
+            (org-end-of-meta-data t)
+            (when (looking-at-p "[ \t]*:LOGBOOK:")
+              (setq target (point)))))
+        (when target (goto-char target)))
+      (apply orig-fun args)))
+
+  (advice-add 'org-pomodoro :around #'my/pomodoro-clock-ancestor))
 #+end_src
 
 * Bibliography
