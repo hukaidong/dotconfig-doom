@@ -35,6 +35,7 @@ Rainbow delimiters help distinguish nested parentheses in programming modes.
 (setq doom-font (font-spec :family "Berkeley Mono Variable" :size 13 :weight 'semi-bold))
 (setq display-line-numbers-type t)
 (setq initial-frame-alist '((width . 180) (height . 55)))
+(setq initial-major-mode 'emacs-lisp-mode)
 (setq doom-leader-key ",")
 (setq doom-localleader-key ", ,")
 #+end_src
@@ -73,6 +74,27 @@ quickly adding todos to an inbox.
   (add-to-list 'org-capture-templates
                '("t" "Todo" entry (file+headline +org-capture-todo-file "Inbox")
                  "* TODO %?\nSCHEDULED: %t\n%i\n%a" :prepend t)))
+#+end_src
+
+* Org Pomodoro
+
+Desktop notifications for org-pomodoro using the alert package. Uses D-Bus
+notifications which integrate with KDE Plasma and other desktop environments.
+
+#+begin_src emacs-lisp
+(use-package! alert
+  :config
+  (setq alert-default-style 'notifications))  ; uses D-Bus, works with Plasma
+
+(after! org-pomodoro
+
+  ;; Hook alerts into pomodoro events
+  (add-hook 'org-pomodoro-finished-hook
+            (lambda () (alert "Pomodoro finished!" :title "org-pomodoro")))
+  (add-hook 'org-pomodoro-break-finished-hook
+            (lambda () (alert "Break over!" :title "org-pomodoro")))
+  (add-hook 'org-pomodoro-killed-hook
+            (lambda () (alert "Pomodoro killed" :title "org-pomodoro"))))
 #+end_src
 
 * Bibliography
