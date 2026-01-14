@@ -88,27 +88,53 @@ Configure org-journal for weekly entries with Saturday as the first day of each 
 
 * Org Pomodoro
 
-Desktop notifications for org-pomodoro using the alert package. Uses D-Bus
-notifications which integrate with KDE Plasma and other desktop environments.
+Desktop notifications for org-pomodoro with persistent system-level alerts.
+Uses notify-send with critical urgency so notifications stay on screen until
+dismissed. Also enables sound alerts and optional kdialog popups for when
+you're away from Emacs.
 
 When starting a pomodoro, the clock-in behavior is modified to find the nearest
 ancestor heading with a LOGBOOK drawer and clock into that instead. This allows
 clocking time to parent tasks when starting pomodoros on subtasks.
 
 #+begin_src emacs-lisp
-(after! alert
-  (setq alert-default-style 'notifications))  ; uses D-Bus, works with Plasma
-
 (after! org-pomodoro
-  (setq org-pomodoro-keep-killed-pomodoro-time t)
+  (setq org-pomodoro-keep-killed-pomodoro-time t
+        ;; Enable sound alerts
+        org-pomodoro-play-sounds t
+        org-pomodoro-audio-player "paplay")  ; PulseAudio player, common on Linux
 
-  ;; Hook alerts into pomodoro events
+  ;; System notification function using notify-send with critical urgency
+  ;; Critical urgency keeps notification on screen until dismissed
+  (defun my/pomodoro-notify (title message)
+    "Send persistent system notification using notify-send."
+    (start-process "pomodoro-notify" nil
+                   "notify-send"
+                   "--urgency=critical"
+                   "--app-name=org-pomodoro"
+                   "-i" "alarm-clock"
+                   title message))
+
+  ;; Optional: KDE dialog popup that requires clicking to dismiss
+  (defun my/pomodoro-kdialog (title message)
+    "Show a KDE dialog popup that must be dismissed."
+    (start-process "pomodoro-kdialog" nil
+                   "kdialog"
+                   "--title" title
+                   "--passivepopup" message "0"))  ; 0 = no auto-timeout
+
+  ;; Hook system notifications into pomodoro events
   (add-hook 'org-pomodoro-finished-hook
-            (lambda () (alert "Pomodoro finished!" :title "org-pomodoro")))
+            (lambda ()
+              (my/pomodoro-notify "Pomodoro Finished!" "Time for a break!")
+              (my/pomodoro-kdialog "org-pomodoro" "Pomodoro finished! Take a break.")))
   (add-hook 'org-pomodoro-break-finished-hook
-            (lambda () (alert "Break over!" :title "org-pomodoro")))
+            (lambda ()
+              (my/pomodoro-notify "Break Over!" "Ready to focus again?")
+              (my/pomodoro-kdialog "org-pomodoro" "Break over! Ready to focus?")))
   (add-hook 'org-pomodoro-killed-hook
-            (lambda () (alert "Pomodoro killed" :title "org-pomodoro")))
+            (lambda ()
+              (my/pomodoro-notify "Pomodoro Killed" "Pomodoro was interrupted")))
 
   ;; Clock into ancestor with LOGBOOK if one exists
   (defun my/pomodoro-clock-ancestor (orig-fun &rest args)
