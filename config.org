@@ -136,6 +136,21 @@ clocking time to parent tasks when starting pomodoros on subtasks.
             (lambda ()
               (my/pomodoro-notify "Pomodoro Killed" "Pomodoro was interrupted")))
 
+  ;; Save the clocked buffer on clock in/out to persist LOGBOOK entries
+  ;; Hooks run AFTER clock operations, so:
+  ;; - started: org-clock-marker is valid (just clocked in)
+  ;; - finished/killed: org-clock-marker may be nil, use org-clock-history
+  (defun my/pomodoro-save-clock-buffer ()
+    "Save the buffer containing the clock entry."
+    (let* ((marker (or org-clock-marker (car org-clock-history)))
+           (buf (and marker (marker-buffer marker))))
+      (when (and buf (buffer-live-p buf) (buffer-modified-p buf))
+        (with-current-buffer buf (save-buffer)))))
+
+  (add-hook 'org-pomodoro-started-hook #'my/pomodoro-save-clock-buffer)
+  (add-hook 'org-pomodoro-finished-hook #'my/pomodoro-save-clock-buffer)
+  (add-hook 'org-pomodoro-killed-hook #'my/pomodoro-save-clock-buffer)
+
   ;; Clock into ancestor with LOGBOOK if one exists
   (defun my/pomodoro-clock-ancestor (orig-fun &rest args)
     "Start pomodoro, clocking into nearest ancestor with a LOGBOOK if one exists."
