@@ -155,7 +155,6 @@
        (nix +lsp +tree-sitter)   ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org
-        +brain
         +journal
         +pandoc
         +pomodoro
