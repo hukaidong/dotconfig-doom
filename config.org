@@ -82,7 +82,7 @@ Configure org-journal for weekly entries with Saturday as the first day of each 
 
 #+begin_src emacs-lisp
 (after! org-journal
-  (setq org-journal-file-type 'weekly
+  (setq org-journal-file-type 'yearly
         org-journal-start-on-weekday 6))  ; 6 = Saturday
 #+end_src
 
